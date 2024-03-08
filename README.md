@@ -1,20 +1,15 @@
 # Keep跑步数据同步到Notion
 
 
-本项目通过Github Action每天定时同步Keep跑步数据到Notion。
+本项目通过Github Action每天定时同步duolingo数据到Notion。
 
 预览效果：https://www.notion.so/malinkang/7c556041c7fd4e21a6713673b6168fd4?pvs=4
 
 
 
-## 使用
+## 使用文档
 
-> [!IMPORTANT]  
-> 关注公众号回复Keep获取教程
-
-![扫码_搜索联合传播样式-标准色版](https://github.com/malinkang/weread2notion-pro/assets/3365208/32fbce17-9a03-4e36-9a39-6e6a34aa3aef)
-
-
+https://malinkang.notion.site/Duolingo2Notion-42a66f4a7fee4e798d887a69a62e66d4?pvs=4 
 
 ## 群
 > [!IMPORTANT]  

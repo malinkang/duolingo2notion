@@ -1,4 +1,3 @@
-import argparse
 import os
 from utils import upload_image
 from notion_helper import NotionHelper
@@ -15,12 +14,20 @@ def get_file():
     else:
         print("OUT_FOLDER does not exist.")
         return None
-    
+
+HEATMAP_GUIDE = "https://mp.weixin.qq.com/s?__biz=MzI1OTcxOTI4NA==&mid=2247484145&idx=1&sn=81752852420b9153fc292b7873217651&chksm=ea75ebeadd0262fc65df100370d3f983ba2e52e2fcde2deb1ed49343fbb10645a77570656728&token=157143379&lang=zh_CN#rd"
+
 if __name__ == "__main__":
     notion_helper = NotionHelper()
     image_file = get_file()
     if image_file:
-        image_url = upload_image(f"heatmap/{os.getenv('REPOSITORY').split('/')[0]}",image_file,f"./OUT_FOLDER/{image_file}")
-        block_id = notion_helper.image_dict.get("id")
-        if(image_url and block_id):
-            notion_helper.update_image_block_link(block_id,image_url)
+        image_url = f"https://raw.githubusercontent.com/{os.getenv('REPOSITORY')}/{os.getenv('REF').split('/')[-1]}/OUT_FOLDER/{image_file}"
+        heatmap_url = f"https://heatmap.malinkang.com/?image={image_url}"
+        if notion_helper.heatmap_block_id:
+            response = notion_helper.update_heatmap(
+                block_id=notion_helper.heatmap_block_id, url=heatmap_url
+            )
+        else:
+            print(f"更新热力图失败，没有添加热力图占位。具体参考：{HEATMAP_GUIDE}")
+    else:
+        print(f"更新热力图失败，没有生成热力图。具体参考：{HEATMAP_GUIDE}")

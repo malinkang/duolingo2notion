@@ -6,7 +6,9 @@ import time
 from notion_client import Client
 from retrying import retry
 from datetime import timedelta
+from dotenv import load_dotenv
 
+load_dotenv()
 from utils import (
     format_date,
     get_date,
@@ -21,11 +23,12 @@ from utils import (
     timestamp_to_date,
     get_property_value,
 )
-
-TAG_ICON_URL = "https://www.notion.so/icons/tag_gray.svg"
-USER_ICON_URL = "https://www.notion.so/icons/user-circle-filled_gray.svg"
-TARGET_ICON_URL = "https://www.notion.so/icons/target_red.svg"
-BOOKMARK_ICON_URL = "https://www.notion.so/icons/bookmark_gray.svg"
+from config import (
+    TARGET_ICON_URL,
+    TAG_ICON_URL,
+    USER_ICON_URL,
+    BOOKMARK_ICON_URL,
+)
 
 
 class NotionHelper:
@@ -35,6 +38,7 @@ class NotionHelper:
         "MONTH_DATABASE_NAME": "月",
         "YEAR_DATABASE_NAME": "年",
         "ALL_DATABASE_NAME": "全部",
+        "MISTAKE_DATABASE_NAME": "错题本",
     }
     database_id_dict = {}
     heatmap_block_id = None
@@ -47,7 +51,7 @@ class NotionHelper:
         for key in self.database_name_dict.keys():
             if os.getenv(key) != None and os.getenv(key) != "":
                 self.database_name_dict[key] = os.getenv(key)
-        
+
         self.day_database_id = self.database_id_dict.get(
             self.database_name_dict.get("DAY_DATABASE_NAME")
         )
@@ -63,6 +67,10 @@ class NotionHelper:
         self.all_database_id = self.database_id_dict.get(
             self.database_name_dict.get("ALL_DATABASE_NAME")
         )
+        self.mistake_database_id = self.database_id_dict.get(
+            self.database_name_dict.get("MISTAKE_DATABASE_NAME")
+        )
+
         if self.day_database_id:
             self.write_database_id(self.day_database_id)
 
@@ -93,7 +101,11 @@ class NotionHelper:
                     child.get("id")
                 )
             elif child["type"] == "embed" and child.get("embed").get("url"):
-                if child.get("embed").get("url").startswith("https://heatmap.malinkang.com/"):
+                if (
+                    child.get("embed")
+                    .get("url")
+                    .startswith("https://heatmap.malinkang.com/")
+                ):
                     self.heatmap_block_id = child.get("id")
             # 如果子块有子块，递归调用函数
             if "has_children" in child and child["has_children"]:
@@ -103,7 +115,6 @@ class NotionHelper:
     def update_heatmap(self, block_id, url):
         # 更新 image block 的链接
         return self.client.blocks.update(block_id=block_id, embed={"url": url})
-
 
     def get_week_relation_id(self, date):
         year = date.isocalendar().year
@@ -184,9 +195,7 @@ class NotionHelper:
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def create_page(self, parent, properties, icon):
-        return self.client.pages.create(
-            parent=parent, properties=properties, icon=icon
-        )
+        return self.client.pages.create(parent=parent, properties=properties, icon=icon)
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
     def query(self, **kwargs):
@@ -246,7 +255,13 @@ class NotionHelper:
             results.extend(response.get("results"))
         return results
 
-    def get_date_relation(self, properties, date):
+    def get_date_relation(self, properties, date, include_day=False):
+        if include_day:
+            properties["日"] = get_relation(
+                [
+                    self.get_day_relation_id(date),
+                ]
+            )
         properties["年"] = get_relation(
             [
                 self.get_year_relation_id(date),
@@ -264,6 +279,6 @@ class NotionHelper:
         )
         properties["全部"] = get_relation(
             [
-                self.get_relation_id("全部",self.all_database_id,TARGET_ICON_URL),
+                self.get_relation_id("全部", self.all_database_id, TARGET_ICON_URL),
             ]
         )

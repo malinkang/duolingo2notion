@@ -144,7 +144,7 @@ class NotionHelper:
 
     def get_day_relation_id(self, date):
         new_date = date.replace(hour=0, minute=0, second=0, microsecond=0)
-        day = new_date.strftime("%Y年%m月%d日")
+        day = new_date.strftime("%Y-%m-%d")
         properties = {
             "日期": get_date(format_date(date)),
         }

@@ -142,4 +142,4 @@ if __name__ == "__main__":
     )
     duolingo_id = response.json()["id"]
     get_duolingo_data()
-    get_user_data()
+    # get_user_data()

@@ -74,7 +74,7 @@ class NotionHelper:
         if self.day_database_id:
             self.write_database_id(self.day_database_id)
 
-    def write_database_id(self, database_id):
+    def write_database_id(self, database_id) -> None:
         env_file = os.getenv('GITHUB_ENV')
         # 将值写入环境文件
         with open(env_file, "a") as file:
@@ -90,7 +90,7 @@ class NotionHelper:
         else:
             raise Exception(f"获取NotionID失败，请检查输入的Url是否正确")
 
-    def search_database(self, block_id):
+    def search_database(self, block_id) -> None:
         children = self.client.blocks.children.list(block_id=block_id)["results"]
         # 遍历子块
         for child in children:
@@ -255,7 +255,7 @@ class NotionHelper:
             results.extend(response.get("results"))
         return results
 
-    def get_date_relation(self, properties, date, include_day=False):
+    def get_date_relation(self, properties, date, include_day: bool=False) -> None:
         if include_day:
             properties["日"] = get_relation(
                 [

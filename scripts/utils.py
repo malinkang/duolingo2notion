@@ -174,7 +174,7 @@ def format_time(time):
     return result
 
 
-def format_date(date, format="%Y-%m-%d %H:%M:%S"):
+def format_date(date, format: str="%Y-%m-%d %H:%M:%S"):
     return date.strftime(format)
 
 
@@ -377,7 +377,7 @@ def url_to_md5(url):
 
     return hex_digest
 
-def download_image(url, save_dir="cover"):
+def download_image(url, save_dir: str="cover"):
     # 确保目录存在，如果不存在则创建
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)

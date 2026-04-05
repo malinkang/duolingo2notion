@@ -74,10 +74,10 @@ class NotionHelper:
         if self.day_database_id:
             self.write_database_id(self.day_database_id)
 
-    def write_database_id(self, database_id):
+    def write_database_id(self, database_id: int) -> None:
         env_file = os.getenv('GITHUB_ENV')
         # 将值写入环境文件
-        with open(env_file, "a") as file:
+        with open(env_file, "a", encoding="utf-8") as file:
             file.write(f"DATABASE_ID={database_id}\n")
     def extract_page_id(self, notion_url):
         # 正则表达式匹配 32 个字符的 Notion page_id
@@ -90,7 +90,7 @@ class NotionHelper:
         else:
             raise Exception(f"获取NotionID失败，请检查输入的Url是否正确")
 
-    def search_database(self, block_id):
+    def search_database(self, block_id: int) -> None:
         children = self.client.blocks.children.list(block_id=block_id)["results"]
         # 遍历子块
         for child in children:
@@ -112,7 +112,7 @@ class NotionHelper:
                 self.search_database(child["id"])
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def update_heatmap(self, block_id, url):
+    def update_heatmap(self, block_id: int, url: str):
         # 更新 image block 的链接
         return self.client.blocks.update(block_id=block_id, embed={"url": url})
 
@@ -168,7 +168,7 @@ class NotionHelper:
         )
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def get_relation_id(self, name, id, icon, properties={}):
+    def get_relation_id(self, name: str, id, icon, properties: dict={}):
         key = f"{id}{name}"
         if key in self.__cache:
             return self.__cache.get(key)
@@ -186,11 +186,11 @@ class NotionHelper:
         return page_id
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def update_book_page(self, page_id, properties):
+    def update_book_page(self, page_id: int, properties):
         return self.client.pages.update(page_id=page_id, properties=properties)
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def update_page(self, page_id, properties):
+    def update_page(self, page_id: int, properties):
         return self.client.pages.update(page_id=page_id, properties=properties)
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
@@ -198,7 +198,7 @@ class NotionHelper:
         return self.client.pages.create(parent=parent, properties=properties, icon=icon)
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def query(self, **kwargs):
+    def query(self, **kwargs: dict):
         kwargs = {k: v for k, v in kwargs.items() if v}
         return self.client.databases.query(**kwargs)
 
@@ -208,21 +208,21 @@ class NotionHelper:
         return response.get("results")
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def append_blocks(self, block_id, children):
+    def append_blocks(self, block_id: int, children):
         return self.client.blocks.children.append(block_id=block_id, children=children)
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def append_blocks_after(self, block_id, children, after):
+    def append_blocks_after(self, block_id: int, children, after):
         return self.client.blocks.children.append(
             block_id=block_id, children=children, after=after
         )
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def delete_block(self, block_id):
+    def delete_block(self, block_id: int):
         return self.client.blocks.delete(block_id=block_id)
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def query_all_by_book(self, database_id, filter):
+    def query_all_by_book(self, database_id: int, filter):
         results = []
         has_more = True
         start_cursor = None
@@ -239,7 +239,7 @@ class NotionHelper:
         return results
 
     @retry(stop_max_attempt_number=3, wait_fixed=5000)
-    def query_all(self, database_id):
+    def query_all(self, database_id: int):
         """获取database中所有的数据"""
         results = []
         has_more = True
@@ -255,7 +255,7 @@ class NotionHelper:
             results.extend(response.get("results"))
         return results
 
-    def get_date_relation(self, properties, date, include_day=False):
+    def get_date_relation(self, properties, date, include_day: bool=False) -> None:
         if include_day:
             properties["日"] = get_relation(
                 [

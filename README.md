@@ -1,10 +1,10 @@
 # 多邻国数据同步到Notion
 
-
 本项目通过Github Action每天定时同步多邻国数据到Notion。
 
-预览效果：https://duolingo.malinkang.com/
+**项目描述**：该项目旨在自动化将多邻国学习数据同步到Notion，以帮助用户更有效地管理和跟踪他们的学习进度。  
 
+预览效果：https://duolingo.malinkang.com/ 
 
 
 ## 使用
@@ -37,4 +37,3 @@
 * [Podcast2Notion](https://github.com/malinkang/podcast2notion)
 * [Douban2Notion](https://github.com/malinkang/douban2notion)
 * [Keep2Notion](https://github.com/malinkang/keep2notion)
-

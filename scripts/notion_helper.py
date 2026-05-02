@@ -77,7 +77,7 @@ class NotionHelper:
     def write_database_id(self, database_id):
         env_file = os.getenv('GITHUB_ENV')
         # 将值写入环境文件
-        with open(env_file, "a") as file:
+        with open(env_file, "a", encoding="utf-8") as file:
             file.write(f"DATABASE_ID={database_id}\n")
     def extract_page_id(self, notion_url):
         # 正则表达式匹配 32 个字符的 Notion page_id

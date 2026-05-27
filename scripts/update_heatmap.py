@@ -1,7 +1,7 @@
 import os
 from utils import upload_image
 from notion_helper import NotionHelper
-def get_file():
+def get_file() -> None:
     # 设置文件夹路径
     folder_path = './OUT_FOLDER'
 

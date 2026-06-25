@@ -19,7 +19,7 @@ headers = {
 }
 
 
-def get_lastest():
+def get_lastest() -> tuple:
     sorts = [{"property": "日期", "direction": "descending"}]
     response = notion_helper.query(
         database_id=notion_helper.day_database_id, sorts=sorts, page_size=1
@@ -40,7 +40,7 @@ def get_lastest():
             return ("2011-01-01", None)
     else:
         return ("2011-01-01", None)
-def check_exist(id):
+def check_exist(id) -> None:
     filter = {"property": "ID", "rich_text": {"equals": id}}
     response = notion_helper.query(database_id=notion_helper.mistake_database_id,filter=filter)
     results = response.get("results")
@@ -51,7 +51,7 @@ def check_exist(id):
 
 
 
-def get_mistakes(id):
+def get_mistakes(id) -> None:
     r = requests.get(f"https://android-api.duolingo.cn/2017-06-30/mistakes/users/{duolingo_id}/courses/{id}?fields=&includeSpeaking=true&limit=100&requestType=INBOX&includeListening=true",headers=headers)
     if r.ok:
         for item in r.json():
@@ -76,7 +76,7 @@ def get_mistakes(id):
         print(f"get mistakes error {r.text}")
 
 
-def get_user_data():
+def get_user_data() -> None:
     """获取用户数据"""
     r = requests.get(f"https://android-api.duolingo.cn/2023-05-23/users/{duolingo_id}",headers=headers)
     if r.ok:
@@ -93,7 +93,7 @@ def get_user_data():
     else:
         print(f"get_user_data failed")
 
-def get_duolingo_data():
+def get_duolingo_data() -> None:
     """获取多邻国每日学习数据"""
     start, id = get_lastest()
     end = pendulum.now("Asia/Shanghai").to_date_string()
@@ -119,7 +119,7 @@ def get_duolingo_data():
         print(f"{r.text}")
 
 
-def add_to_notion(xp, date, is_update, page_id):
+def add_to_notion(xp, date, is_update: bool, page_id: int) -> None:
     properties = utils.get_properties(xp, xp_properties_type_dict)
     notion_helper.get_date_relation(properties, date)
     parent = {
